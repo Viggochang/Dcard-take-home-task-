@@ -13,15 +13,6 @@ const ContainerDiv = styled.div`
   position: relative;
 `;
 
-const LoadMore = styled.div`
-  width: 100%;
-  height: 100px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  background-color: gray;
-`;
-
 export default function Container() {
   const [data, setData] = useState([]);
 
@@ -30,7 +21,6 @@ export default function Container() {
       {data.map((data) => (
         <Article key={data.id} title={data.title} excerpt={data.excerpt} />
       ))}
-      <LoadMore />
     </ContainerDiv>
   );
 }
