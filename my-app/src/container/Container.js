@@ -14,7 +14,7 @@ const ContainerDiv = styled.div`
 `;
 
 const apiHost = "http://localhost:5000";
-const buffer = 200;
+const buffer = 300;
 export default function Container() {
   const [data, setData] = useState([]);
   const lastId = useRef("");
