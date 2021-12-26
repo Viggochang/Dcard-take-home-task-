@@ -15,6 +15,20 @@ const ContainerDiv = styled.div`
 
 export default function Container() {
   const [data, setData] = useState([]);
+  const lastId = useRef("");
+
+  console.log("render");
+  useEffect(() => {
+    function fetchData() {
+      fetch(`http://localhost:5000/list?id=${lastId.current}`)
+        .then((res) => res.json())
+        .then((newData) => {
+          setData((state) => [...state, ...newData]);
+        })
+        .catch((err) => console.log("err"));
+    }
+    fetchData();
+  }, []);
 
   return (
     <ContainerDiv>
