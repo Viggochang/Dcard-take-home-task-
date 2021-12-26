@@ -13,6 +13,7 @@ const ContainerDiv = styled.div`
   position: relative;
 `;
 
+const buffer = 200;
 export default function Container() {
   const [data, setData] = useState([]);
   const lastId = useRef("");
@@ -24,6 +25,19 @@ export default function Container() {
         .then((res) => res.json())
         .then((newData) => {
           setData((state) => [...state, ...newData]);
+
+          function handleInfiniteScroll() {
+            const bottomToWindowTop =
+              document.body.getBoundingClientRect().bottom;
+            const windowHeight = window.innerHeight;
+
+            if (bottomToWindowTop - windowHeight < buffer) {
+              window.removeEventListener("scroll", handleInfiniteScroll);
+              lastId.current = newData.slice(-1)[0]["id"];
+              fetchData();
+            }
+          }
+          window.addEventListener("scroll", handleInfiniteScroll);
         })
         .catch((err) => console.log("err"));
     }
