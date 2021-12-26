@@ -19,28 +19,33 @@ export default function Container() {
   const lastId = useRef("");
 
   console.log("render");
-  useEffect(() => {
-    function fetchData() {
-      fetch(`http://localhost:5000/list?id=${lastId.current}`)
-        .then((res) => res.json())
-        .then((newData) => {
-          setData((state) => [...state, ...newData]);
 
-          function handleInfiniteScroll() {
-            const bottomToWindowTop =
-              document.body.getBoundingClientRect().bottom;
-            const windowHeight = window.innerHeight;
+  function infiniteScroll(data, handleInfiniteScroll) {
+    const bottomToWindowTop = document.body.getBoundingClientRect().bottom;
+    const windowHeight = window.innerHeight;
 
-            if (bottomToWindowTop - windowHeight < buffer) {
-              window.removeEventListener("scroll", handleInfiniteScroll);
-              lastId.current = newData.slice(-1)[0]["id"];
-              fetchData();
-            }
-          }
-          window.addEventListener("scroll", handleInfiniteScroll);
-        })
-        .catch((err) => console.log("err"));
+    if (bottomToWindowTop - windowHeight < buffer) {
+      window.removeEventListener("scroll", handleInfiniteScroll);
+      lastId.current = data.slice(-1)[0]["id"];
+      fetchData();
     }
+  }
+
+  function fetchData() {
+    fetch(`http://localhost:5000/list?id=${lastId.current}`)
+      .then((res) => res.json())
+      .then((newData) => {
+        setData((state) => [...state, ...newData]);
+
+        function handleInfiniteScroll() {
+          infiniteScroll(newData, handleInfiniteScroll);
+        }
+        window.addEventListener("scroll", handleInfiniteScroll);
+      })
+      .catch((err) => console.log("err"));
+  }
+
+  useEffect(() => {
     fetchData();
   }, []);
 
