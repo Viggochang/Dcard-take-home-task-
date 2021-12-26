@@ -27,15 +27,16 @@ export default function Container() {
     if (isToBottom) {
       window.removeEventListener("scroll", unSubscribeFn);
       lastId.current = data.slice(-1)[0]["id"];
-      fetchData();
+      fetchData(lastId.current);
     }
   }
 
-  async function fetchData() {
+  async function fetchData(lastId) {
     try {
-      const res = await fetch(`${apiHost}/list?id=${lastId.current}`);
+      const res = await fetch(`${apiHost}/list?id=${lastId}`);
       const newData = await res.json();
       setData((state) => [...state, ...newData]);
+      console.log(newData);
 
       function handleInfiniteScroll() {
         infiniteScroll(newData, handleInfiniteScroll);
@@ -47,7 +48,7 @@ export default function Container() {
   }
 
   useEffect(() => {
-    fetchData();
+    fetchData(lastId.current);
   }, []);
 
   return (
