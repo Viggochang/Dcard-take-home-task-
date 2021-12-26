@@ -13,36 +13,37 @@ const ContainerDiv = styled.div`
   position: relative;
 `;
 
+const apiHost = "http://localhost:5000";
 const buffer = 200;
 export default function Container() {
   const [data, setData] = useState([]);
   const lastId = useRef("");
 
-  console.log("render");
-
-  function infiniteScroll(data, handleInfiniteScroll) {
+  function infiniteScroll(data, unSubscribeFn) {
     const bottomToWindowTop = document.body.getBoundingClientRect().bottom;
     const windowHeight = window.innerHeight;
+    const isToBottom = bottomToWindowTop - windowHeight < buffer;
 
-    if (bottomToWindowTop - windowHeight < buffer) {
-      window.removeEventListener("scroll", handleInfiniteScroll);
+    if (isToBottom) {
+      window.removeEventListener("scroll", unSubscribeFn);
       lastId.current = data.slice(-1)[0]["id"];
       fetchData();
     }
   }
 
-  function fetchData() {
-    fetch(`http://localhost:5000/list?id=${lastId.current}`)
-      .then((res) => res.json())
-      .then((newData) => {
-        setData((state) => [...state, ...newData]);
+  async function fetchData() {
+    try {
+      const res = await fetch(`${apiHost}/list?id=${lastId.current}`);
+      const newData = await res.json();
+      setData((state) => [...state, ...newData]);
 
-        function handleInfiniteScroll() {
-          infiniteScroll(newData, handleInfiniteScroll);
-        }
-        window.addEventListener("scroll", handleInfiniteScroll);
-      })
-      .catch((err) => console.log("err"));
+      function handleInfiniteScroll() {
+        infiniteScroll(newData, handleInfiniteScroll);
+      }
+      window.addEventListener("scroll", handleInfiniteScroll);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export default function Container() {
   return (
     <ContainerDiv>
       {data.map((data) => (
-        <Article key={data.id} title={data.title} excerpt={data.excerpt} />
+        <Article key={data.id} data={data} />
       ))}
     </ContainerDiv>
   );

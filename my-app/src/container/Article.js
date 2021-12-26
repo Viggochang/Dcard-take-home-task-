@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const ArticleStyle = styled.article`
   border-bottom: 1px #ccc solid;
-  padding: 50px 0;
+  padding: 40px 0;
 `;
 
 const TitleDiv = styled.div`
@@ -19,7 +19,8 @@ const ExcerptDiv = styled.div`
   overflow: hidden;
 `;
 
-export default function Article({ title, excerpt }) {
+export default function Article({ data }) {
+  const { title, excerpt } = data;
   return (
     <ArticleStyle>
       <TitleDiv>{title}</TitleDiv>
