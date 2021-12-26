@@ -36,7 +36,6 @@ export default function Container() {
       const res = await fetch(`${apiHost}/list?id=${lastId}`);
       const newData = await res.json();
       setData((state) => [...state, ...newData]);
-      console.log(newData);
 
       function handleInfiniteScroll() {
         infiniteScroll(newData, handleInfiniteScroll);
