@@ -1,4 +1,4 @@
-# Dcard - Junior Web Frontend Developer Take Home Test 
+# backend practice - Dcard api
 + Author： Viggo Chang
 + E-mail： <gl4cj8686@gmail.com> 
 
